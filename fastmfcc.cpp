@@ -12,13 +12,11 @@
 #include <array>
 #define PREPROC_MFCC_SIZE 96 //can be changed
 
-template<typename T>
-constexpr T sqr(T a) {
-    return a * a;
-}
-template<typename T>
-constexpr T ipow(T a, std::size_t n) {
-    return n == 0 ? 1 : sqr(ipow(a, n / 2)) * (n % 2 == 0 ?  1 : a);
+template <typename T>
+constexpr T ipow(T num, unsigned int pow)
+{
+    return (pow >= sizeof(unsigned int) * 8) ? 0 :
+        pow == 0 ? 1 : num * ipow(num, pow - 1);
 }
 
 constexpr double PreprocCenterFrequency(unsigned int filterBand) {
