@@ -63,8 +63,6 @@ constexpr auto preprocValues(Func&& func) {
     }
     return res;
 }
-const static auto PREPROC_CENTER_FREQUENCIES = preprocValues<PREPROC_MFCC_SIZE>(PreprocCenterFrequency);
-const static auto PREPROC_MAGNITURE_FACTOR = preprocValues <PREPROC_MFCC_SIZE>(PreprocMagnitudeFactor);
 
 /*
  * !!!  This is the only function to call directly !!!
@@ -78,6 +76,8 @@ const static auto PREPROC_MAGNITURE_FACTOR = preprocValues <PREPROC_MFCC_SIZE>(P
  */
 double GetCoefficient(double* spectralData, unsigned int samplingRate, unsigned int NumFilters, unsigned int binSize, unsigned int m)
 {
+    constexpr const static auto PREPROC_CENTER_FREQUENCIES = preprocValues<PREPROC_MFCC_SIZE>(PreprocCenterFrequency);
+    constexpr const static auto PREPROC_MAGNITURE_FACTOR = preprocValues <PREPROC_MFCC_SIZE>(PreprocMagnitudeFactor);
     double result = 0.0f;
     double outerSum = 0.0f;
     double innerSum = 0.0f;
