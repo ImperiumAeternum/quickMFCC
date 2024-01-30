@@ -13,11 +13,9 @@
 #define PREPROC_MFCC_SIZE 96 //can be changed
 
 template <typename T>
-constexpr T ipow(T x, int exp)
-{
+constexpr T ipow(T x, int exp) {
     int sign = 1;
-    if (exp < 0)
-    {
+    if (exp < 0) {
         sign = -1;
         exp = -exp;
     }
