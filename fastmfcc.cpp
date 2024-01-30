@@ -13,10 +13,20 @@
 #define PREPROC_MFCC_SIZE 96 //can be changed
 
 template <typename T>
-constexpr T ipow(T num, unsigned int pow)
+constexpr T ipow(T x, int exp)
 {
-    return (pow >= sizeof(unsigned int) * 8) ? 0 :
-        pow == 0 ? 1 : num * ipow(num, pow - 1);
+    int sign = 1;
+    if (exp < 0)
+    {
+        sign = -1;
+        exp = -exp;
+    }
+    if (exp == 0)
+        return x < 0 ? -1.0 : 1.0;
+    double ret = x;
+    while (--exp)
+        ret *= x;
+    return sign > 0 ? ret : 1.0 / ret;
 }
 
 constexpr double PreprocCenterFrequency(unsigned int filterBand) {
