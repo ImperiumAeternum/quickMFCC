@@ -7,6 +7,7 @@
 #include <fstream>
 #include <vector>
 #include <chrono>
+#include <array>
 
 #include "../quickmfcc.h"
 
