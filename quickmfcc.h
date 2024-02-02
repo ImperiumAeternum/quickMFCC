@@ -1,5 +1,5 @@
 /*
- * fastmfcc.h - Header for fastmfcc
+ * quickmfcc.h - Header for fastmfcc
 * Copyright (c) 2023 Kogan Vladislav, Kostanda Volodymyr, Marukhnenko Oleksandr
 * Copyright (c) 2010 Jeremy Sawruk
 *
@@ -14,7 +14,7 @@
 double GetCoefficient(double* spectralData, unsigned int samplingRate, unsigned int NumFilters, unsigned int binSize, unsigned int m);
 
 //Compute constexpr pow, replaces math.h for preproc functions (For internal computation only - not to be called directly)
-template <typename T> constexpr T ipow(T num, unsigned int pow);
+template <typename T> constexpr T ipow(T x, int exp);
 
 //Compute some CenterFrequencies at compile-time (For internal computation only - not to be called directly)
 constexpr double PreprocCenterFrequency(unsigned int filterBand);
