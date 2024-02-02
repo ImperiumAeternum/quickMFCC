@@ -8,10 +8,67 @@
 */
 
 #include <math.h>
-#include "fastmfcc.h"
+#include "quickmfcc.h"
 #include <array>
-#define PREPROC_MFCC_SIZE 96 //can be changed
 
+/*
+* Defines size of look-up table
+* Recommended to be not less than numFilters and binSize used in GetCoefficient call
+*/
+#define PREPROC_MFCC_SIZE 96
+
+/*
+ * !!!  This is the only function to call directly !!!
+ * Computes the specified (mth) MFCC
+ * spectralData - array of doubles containing the results of FFT computation. This data is already assumed to be purely real
+ * samplingRate - the rate that the original time-series data was sampled at (i.e 44100)
+ * NumFilters - the number of filters to use in the computation. Recommended value = 48
+ * binSize - the size of the spectralData array, usually a power of 2
+ * m - The mth MFCC coefficient to compute
+ *
+ */
+double GetCoefficient(double* spectralData, unsigned int samplingRate, unsigned int NumFilters, unsigned int binSize, unsigned int m)
+{
+    double result = 0.0f;
+    double outerSum = 0.0f;
+    double innerSum = 0.0f;
+    unsigned int k, l;
+    // 0 <= m < L
+    if(m >= NumFilters)
+    {
+        // This represents an error condition - the specified coefficient is greater than or equal to the number of filters. The behavior in this case is undefined.
+        return 0.0f;
+    }
+
+    result = NormalizationFactor(NumFilters, m);
+    const double cosMdivNF = ((m * PI) / NumFilters);
+    const double rBinSize = 1.0/binSize;
+
+    for(l = 1; l <= NumFilters; l++)
+    {
+        // Compute inner sum
+        innerSum = 0.0f;
+        for(k = 0; k < binSize - 1; k++)
+        {
+            innerSum += fabs(spectralData[k] * GetFilterParameter(samplingRate, rBinSize, k, l));
+        }
+
+        if(innerSum > 0.0f)
+        {
+            innerSum = log(innerSum); // The log of 0 is undefined, so don't use it
+        }
+
+        innerSum = innerSum * cos(cosMdivNF * (l - 0.5f));
+
+        outerSum += innerSum;
+    }
+
+    result *= outerSum;
+
+    return result;
+}
+
+//Custom function since current C++ math lib doesn't have constexpr pow
 template <typename T>
 constexpr T ipow(T x, int exp) {
     int sign = 1;
@@ -62,59 +119,6 @@ constexpr auto preprocValues(Func&& func) {
         res[i] = func(i);
     }
     return res;
-}
-
-/*
- * !!!  This is the only function to call directly !!!
- * Computes the specified (mth) MFCC
- * spectralData - array of doubles containing the results of FFT computation. This data is already assumed to be purely real
- * samplingRate - the rate that the original time-series data was sampled at (i.e 44100)
- * NumFilters - the number of filters to use in the computation. Recommended value = 48
- * binSize - the size of the spectralData array, usually a power of 2
- * m - The mth MFCC coefficient to compute
- *
- */
-double GetCoefficient(double* spectralData, unsigned int samplingRate, unsigned int NumFilters, unsigned int binSize, unsigned int m)
-{
-    constexpr const static auto PREPROC_CENTER_FREQUENCIES = preprocValues<PREPROC_MFCC_SIZE>(PreprocCenterFrequency);
-    constexpr const static auto PREPROC_MAGNITURE_FACTOR = preprocValues <PREPROC_MFCC_SIZE>(PreprocMagnitudeFactor);
-    double result = 0.0f;
-    double outerSum = 0.0f;
-    double innerSum = 0.0f;
-    unsigned int k, l;
-    // 0 <= m < L
-    if(m >= NumFilters)
-    {
-        // This represents an error condition - the specified coefficient is greater than or equal to the number of filters. The behavior in this case is undefined.
-        return 0.0f;
-    }
-
-    result = NormalizationFactor(NumFilters, m);
-    const double cosMdivNF = ((m * PI) / NumFilters);
-    const double rBinSize = 1.0/binSize;
-
-    for(l = 1; l <= NumFilters; l++)
-    {
-        // Compute inner sum
-        innerSum = 0.0f;
-        for(k = 0; k < binSize - 1; k++)
-        {
-            innerSum += fabs(spectralData[k] * GetFilterParameter(samplingRate, rBinSize, k, l));
-        }
-
-        if(innerSum > 0.0f)
-        {
-            innerSum = log(innerSum); // The log of 0 is undefined, so don't use it
-        }
-
-        innerSum = innerSum * cos(cosMdivNF * (l - 0.5f));
-
-        outerSum += innerSum;
-    }
-
-    result *= outerSum;
-
-    return result;
 }
 
 /*
@@ -178,6 +182,7 @@ double GetFilterParameter(unsigned int samplingRate, double rBinSize, unsigned i
  */
 double GetMagnitudeFactor(unsigned int filterBand)
 {
+    constinit const static auto PREPROC_MAGNITURE_FACTOR = preprocValues <PREPROC_MFCC_SIZE>(PreprocMagnitudeFactor);
     if (filterBand < PREPROC_MFCC_SIZE) {
         return PREPROC_MAGNITURE_FACTOR[filterBand];
     }
@@ -195,7 +200,7 @@ double GetMagnitudeFactor(unsigned int filterBand)
  */
 double GetCenterFrequency(unsigned int filterBand)
 {
-
+    constinit const static auto PREPROC_CENTER_FREQUENCIES = preprocValues<PREPROC_MFCC_SIZE>(PreprocCenterFrequency);
     if (filterBand < PREPROC_MFCC_SIZE) {
         return PREPROC_CENTER_FREQUENCIES[filterBand];
     }

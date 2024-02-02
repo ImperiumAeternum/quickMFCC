@@ -1,12 +1,18 @@
-fastMFCC - C++17 library for computing Mel-Frequency Cepstral Coefficients
-Version 0.1 - 21 March 2023
+quickMFCC - C++20 library for computing Mel-Frequency Cepstral Coefficients
+Version 0.9 - 2 February 2023
 
-Implementation based on С libMFCC library https://github.com/jsawruk/libmfcc. FastMFCC uses modern C++ features like constexpr to speed up computation. It approximately 10x faster than original library.
+Implementation based on С libMFCC library https://github.com/jsawruk/libmfcc. QuickMFCC uses modern C++ features like constexpr to speed up computation. 
+
+It approximately 20x faster than original library. Average performance results for computing 13 coefficients using Ryzen 5600H on 4 GHz:
+libMFCC 	- 8'192'429 nanoseconds aka 8 milliseconds
+quickMFCC	- 348'858 nanoseconds	aka 0.33 milliseconds
 
 Files in this distribution:
-
-	LICENSE.md		=>	License to use and redistribute fastMFCC (MIT License)
-	README.md		=>	This file
-	libmfcc.c		=>	fastMFCC algorithm implementation
-	libmfcc.h		=>	fastMFCC header file
-	Sturm2010b.pdf		=>	Sturm et al. reference document
+	LICENSE.md			=>	License to use and redistribute quickMFCC (MIT License)
+	README.md			=>	This file
+	quickmfcc.cpp		=>	quickMFCC algorithm implementation
+	quickmfcc.h			=>	quickMFCC header file
+	example/CMakeLists.txt	=>  CMake file for example.cpp
+	example/demo.cpp		=> 	algorithm usage sample
+	example/sample.dat 		=>  FFT data to process in example
+	Sturm2010b.pdf			=>	Sturm et al. reference document
