@@ -8,6 +8,7 @@
 #include <vector>
 #include <chrono>
 #include <array>
+#include <filesystem>
 
 #include "../quickmfcc.h"
 
@@ -21,7 +22,9 @@ int main()
     std::vector<double> spectrum(8192);
 
     // Name of the sample spectrum data file
-    const std::string fileName = "sample.dat";
+    std::filesystem::path currentPath = __FILE__;
+    std::filesystem::path directory = currentPath.parent_path();
+    std::filesystem::path fileName = directory / "sample.dat";
 
     // Open the sample spectrum data
     std::ifstream sampleFile(fileName, std::ios::binary);
