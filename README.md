@@ -1,5 +1,5 @@
 quickMFCC - C++20 library for computing Mel-Frequency Cepstral Coefficients <br>
-Version 0.9 - 2 February 2023
+Version 0.9 - 2 February 2024
 
 Implementation based on С libMFCC library https://github.com/jsawruk/libmfcc. QuickMFCC uses modern C++ features like constexpr to speed up computation. 
 
