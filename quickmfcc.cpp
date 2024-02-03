@@ -13,7 +13,7 @@
 
 /*
 * Defines size of look-up table
-* Recommended to be not less than numFilters and binSize used in GetCoefficient call
+* Recommended to be not less than numFilters used in GetCoefficient call
 */
 #define PREPROC_MFCC_SIZE 96
 
