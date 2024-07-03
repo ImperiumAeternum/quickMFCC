@@ -8,7 +8,7 @@ quickMFCC is a C++20 library designed for efficiently computing Mel-Frequency Ce
 
 - **High Performance:** QuickMFCC is optimized for speed by using look-up tables to complete most frequent computations at compile-time
 - **C++20 Features:** Utilizing modern C++ features, including constexpr and constinit, to enhance computation speed and efficiency
-- **Ease of Use:** This is header-only library with no dependencies except modern C++ compiler.
+- **Ease of Use:** This is a lightweight library with no dependencies except modern C++ compiler.
 
 ## Performance Benchmark
 
